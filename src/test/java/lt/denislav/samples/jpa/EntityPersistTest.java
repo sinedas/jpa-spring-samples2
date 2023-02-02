@@ -1,15 +1,10 @@
 package lt.denislav.samples.jpa;
 
-import java.util.Date;
-import javax.persistence.GeneratedValue;
-import lombok.extern.slf4j.Slf4j;
 import lt.denislav.samples.jpa.dao.ClaimsDao;
 import lt.denislav.samples.jpa.domain.BaseEntity;
 import lt.denislav.samples.jpa.domain.Claim;
 import lt.denislav.samples.jpa.domain.ClaimStatus;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.junit.Before;
+import lt.denislav.samples.jpa.repository.ClaimsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,29 +12,40 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import java.util.Date;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EntityPersistTest extends BaseTest{
+public class EntityPersistTest extends BaseTest {
 
     @Autowired
-    ClaimsDao claimsDao;
+    ClaimsRepository claimsRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     /**
      * Test saves and loads {@link Claim} entity.
-     *
+     * <p>
      * You can play with {@link GeneratedValue} annotations in {@link BaseEntity} to see
      * different id generation strategies.
      */
     //@Before
+    @Test
+    @Transactional
     public void saveClaim() {
         Claim claim = new Claim();
         claim.setStatus(ClaimStatus.OPEN);
         claim.setDate(new Date());
-        claim = claimsDao.save(claim);
+        claim = claimsRepository.save(claim);
 
         log.debug("Saved claim:" + claim);
+        entityManager.flush();
+        entityManager.clear();
 
-        claim = claimsDao.findById(claim.getId());
+        claim = claimsRepository.findById(claim.getId()).get();
 
         //LOG.debug("Loaded claim:" +  claim);
     }
@@ -55,8 +61,8 @@ public class EntityPersistTest extends BaseTest{
     @Test
     @Transactional
     public void saveTenClaims() {
-        for (int i = 0; i < 10; i ++) {
-            Claim claim = claimsDao.save(new Claim());
+        for (int i = 0; i < 10; i++) {
+            Claim claim = claimsRepository.save(new Claim());
 
             log.debug("claim saved, claim id: " + claim.getId());
         }
