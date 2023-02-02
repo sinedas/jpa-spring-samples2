@@ -1,0 +1,31 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.11.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+}
+
+group = 'lt.denislav.samples.jpa'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation group: 'ch.qos.logback', name: 'logback-classic'
+	implementation group: 'ch.qos.logback', name: 'logback-core'
+
+	annotationProcessor group: 'org.projectlombok', name: 'lombok'
+	compileOnly group: 'org.projectlombok', name: 'lombok'
+
+	runtimeOnly 'com.h2database:h2'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testCompileOnly group: 'org.projectlombok', name: 'lombok'
+	testRuntimeOnly group: 'org.projectlombok', name: 'lombok'
+	testImplementation group: 'org.projectlombok', name: 'lombok'
+	testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+}
